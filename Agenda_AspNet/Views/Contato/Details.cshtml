@@ -5,63 +5,51 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>Details</h1>
+<h1>Detalhes</h1>
 
 <div>
     <h4>Contato</h4>
     <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.nome)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.nome)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.sobrenome)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.sobrenome)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.telefone)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.telefone)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.email)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.email)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.data_criacao)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.data_criacao)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.descricao)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.descricao)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.foto)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.foto)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.ativo)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.ativo)
-        </dd>
-    </dl>
+    <div class="row">
+        <div class="col-sm-8 text-center">
+            <div class="card bg-info text-dark col-sm-8">
+                <img class="card-img" src="@Html.DisplayFor(model => model.foto)" />
+                <div class="card-body">
+                    <h5 class="card-title">@Html.DisplayFor(model => model.nome)</h5>
+                    <h6 class="mb-4">@Html.DisplayFor(model => model.sobrenome)</h6>
+                    <p class="card-text">@Html.DisplayFor(model => model.descricao)</p>
+                </div>
+                <ul class="list-group list-group-flush mb-2">
+                    <li class="list-group-item">@Html.DisplayNameFor(model => model.email):  @Html.DisplayFor(model => model.email)</li>
+                    <li class="list-group-item">@Html.DisplayNameFor(model => model.telefone): @Html.DisplayFor(model => model.telefone)</li>
+                    <li class="list-group-item">@Html.DisplayNameFor(model => model.data_criacao): @Html.DisplayFor(model => model.data_criacao)</li>
+                    <li class="list-group-item">@Html.DisplayNameFor(model => model.categoria) - @Html.DisplayFor(model => model.categoria.descricao)</li>
+                    <li class="list-group-item">@Html.DisplayNameFor(model => model.ativo) - @Html.DisplayFor(model => model.ativo)</li>
+                </ul>
+            </div>
+        </div>
+        <div class="col-sm-4">
+            @if (@Model.enderecos != null)
+            {
+                @foreach (var item in Model.enderecos)
+                {
+                    <div class="card bg-info text-white">
+                        <div class="card-title"></div>
+                        <div class="card-body">
+                            <h6>@Html.DisplayNameFor(modelItem => item.id): @Html.DisplayFor(modelItem => item.id) - @Html.DisplayNameFor(modelItem => item.cep): @Html.DisplayFor(modelItem => item.cep)</h6>
+                            <p>End: @Html.DisplayFor(modelItem => item.logradouro), @Html.DisplayFor(modelItem => item.numero)</p>
+                            <p>@Html.DisplayFor(modelItem => item.complemento)</p>
+                        </div>
+                        <div class="card-footer">@Html.DisplayFor(modelItem => item.bairro) - @Html.DisplayFor(modelItem => item.localidade)/@Html.DisplayFor(modelItem => item.uf)</div>
+                    </div>
+                }
+            }
+        </div>
+    </div>
 </div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model.id">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+<div class="mt-2">
+    <a asp-action="Edit" asp-route-id="@Model.id" class="btn btn-sm btn-info" title="Editar Cadastro">Edit</a> |
+    <a asp-controller="Endereco" asp-action="Create" class="btn btn-sm btn-warning">Cadastrar Endereço</a> |
+    <a asp-action="Index" class="btn btn-sm btn-secondary">Voltar para Lista</a>
+    
 </div>

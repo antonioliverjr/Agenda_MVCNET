@@ -9,6 +9,7 @@ namespace Agenda_AspNet.Models
 {
     public class Endereco
     {
+        [Display(Name = "Registro")]
         public int id { get; set; }
         [Required]
         [Display(Name = "Cep")]
