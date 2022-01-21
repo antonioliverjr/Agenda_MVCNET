@@ -1,5 +1,6 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
+using MySql.EntityFrameworkCore.Metadata;
 
 namespace Agenda_AspNet.Migrations
 {
@@ -12,8 +13,8 @@ namespace Agenda_AspNet.Migrations
                 columns: table => new
                 {
                     id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    descricao = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                        .Annotation("MySQL:ValueGenerationStrategy", MySQLValueGenerationStrategy.IdentityColumn),
+                    descricao = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -25,16 +26,16 @@ namespace Agenda_AspNet.Migrations
                 columns: table => new
                 {
                     id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    nome = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    sobrenome = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    telefone = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    email = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    data_criacao = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    descricao = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                        .Annotation("MySQL:ValueGenerationStrategy", MySQLValueGenerationStrategy.IdentityColumn),
+                    nome = table.Column<string>(type: "text", nullable: false),
+                    sobrenome = table.Column<string>(type: "text", nullable: false),
+                    telefone = table.Column<string>(type: "text", nullable: false),
+                    email = table.Column<string>(type: "text", nullable: true),
+                    data_criacao = table.Column<DateTime>(type: "datetime", nullable: false),
+                    descricao = table.Column<string>(type: "text", nullable: true),
                     categoria_id = table.Column<int>(type: "int", nullable: false),
-                    foto = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ativo = table.Column<bool>(type: "bit", nullable: false)
+                    foto = table.Column<string>(type: "text", nullable: true),
+                    ativo = table.Column<bool>(type: "tinyint(1)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -52,14 +53,14 @@ namespace Agenda_AspNet.Migrations
                 columns: table => new
                 {
                     id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                        .Annotation("MySQL:ValueGenerationStrategy", MySQLValueGenerationStrategy.IdentityColumn),
                     cep = table.Column<int>(type: "int", nullable: false),
-                    logradouro = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    numero = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    complemento = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    bairro = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    localidade = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    uf = table.Column<string>(type: "nvarchar(2)", maxLength: 2, nullable: false),
+                    logradouro = table.Column<string>(type: "text", nullable: false),
+                    numero = table.Column<string>(type: "text", nullable: false),
+                    complemento = table.Column<string>(type: "text", nullable: true),
+                    bairro = table.Column<string>(type: "text", nullable: false),
+                    localidade = table.Column<string>(type: "text", nullable: false),
+                    uf = table.Column<string>(type: "varchar(2)", maxLength: 2, nullable: false),
                     contato_id = table.Column<int>(type: "int", nullable: false),
                     nome_contato_id = table.Column<int>(type: "int", nullable: true)
                 },

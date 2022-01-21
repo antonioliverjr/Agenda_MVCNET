@@ -10,13 +10,23 @@ namespace Agenda_AspNet.Data
 {
     public class Context : DbContext
     {
-        //private readonly IConfiguration configuration;
+        public Context(DbContextOptions<Context> options) : base(options)
+        {
+        }
         public virtual DbSet<Contato> Contatos { get; set; }
         public virtual DbSet<Categoria> Categorias { get; set; }
         public virtual DbSet<Endereco> Enderecos { get; set; }
+
+        /*
+        private readonly IConfiguration _configuration;
+        public Context(IConfiguration configuration)
+        {
+            _configuration = configuration;
+        }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlServer("Server=DELLJR\\SQLEXPRESS;Database=AGENDA;User ID=project;Password=Jrdbsql");
+            optionsBuilder.UseSqlServer(_configuration.GetConnectionString("Default"));
         }
+        */
     }
 }
