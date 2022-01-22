@@ -49,7 +49,52 @@
 </div>
 <div class="mt-2">
     <a asp-action="Edit" asp-route-id="@Model.id" class="btn btn-sm btn-info" title="Editar Cadastro">Edit</a> |
-    <a asp-controller="Endereco" asp-action="Create" class="btn btn-sm btn-warning">Cadastrar Endereço</a> |
+    <a href="#" class="btn btn-sm btn-warning j_endereco_create" data-id="@Model.id" title="Novo Endereço">Cadastrar Endereço</a> |
     <a asp-action="Index" class="btn btn-sm btn-secondary">Voltar para Lista</a>
-    
+
 </div>
+
+<div id="modal_endereco_new"></div>
+
+@section Scripts { 
+    <script>
+        $(function () {
+
+            function modal() {
+                var botao = $("#salvar_endereco")
+                botao.prop("disabled", true)
+                $("#cep").inputmask('99999-999')
+                $("#cep").on("change", function () {
+                    var cep = $(this).val()
+                    if (cep.length == 8) {
+                        $(this).removeClass("is-invalid")
+
+                        // Implementar viacep
+
+                        botao.prop("disabled", false)
+                    }
+                    else {
+                        $(this).addClass("is-invalid")
+                        botao.prop("disabled", true)
+                    }
+                })
+            }
+
+            $(".j_endereco_create").on("click", function (e) {
+                e.preventDefault()
+                var id = $(this).data("id")
+                $.ajax({
+                    type: "GET",
+                    url: '@Url.Action("Create", "Endereco")',
+                    success: (function (data) {
+                        $("#modal_endereco_new").html(data)
+                        $("#contato_id").val(id).change()
+                        modal()
+                        $("#_create-modal-endereco").modal()
+                    })
+                })
+            })
+
+        })
+    </script>
+}

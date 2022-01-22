@@ -155,7 +155,7 @@ namespace Agenda_AspNet.Controllers
                 return NotFound();
             }
 
-            return View(contato);
+            return PartialView("_Delete", contato);
         }
 
         // POST: Contato/Delete/5

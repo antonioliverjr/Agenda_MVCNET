@@ -32,29 +32,51 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.nome)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.sobrenome)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.telefone)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.data_criacao)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ativo)
-            </td>
-            <td>
-                <a asp-action="Details" asp-route-id="@item.id" class="btn btn-sm btn-success" title="Detalhes do Cadastro">Ver</a> |
-                <a asp-action="Edit" asp-route-id="@item.id" class="btn btn-sm btn-info" title="Editar Cadastro">Edit</a> |
-                <a asp-action="Delete" asp-route-id="@item.id" class="btn btn-sm btn-danger" title="Deletar Cadastro">Del</a>
-            </td>
-        </tr>
-}
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.nome)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.sobrenome)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.telefone)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.data_criacao)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ativo)
+                </td>
+                <td>
+                    <a asp-action="Details" asp-route-id="@item.id" class="btn btn-sm btn-success" title="Detalhes do Cadastro">Ver</a> |
+                    <a asp-action="Edit" asp-route-id="@item.id" class="btn btn-sm btn-info" title="Editar Cadastro">Edit</a> |
+                    <a href="#" class="btn btn-sm btn-danger j_delete_confirm" data-id="@item.id" title="Deletar Cadastro">Del</a>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
+
+<div id="modal-delete"></div>
+
+@section Scripts {
+    <script>
+        $(function () {          
+            $(".j_delete_confirm").on("click", function (e) {
+                e.preventDefault()
+                var id = $(this).data("id")
+                $.ajax({
+                    type: "GET",
+                    url: '@Url.Action("Delete", "Contato")' + "/" + id,
+                    success: (function (data) {
+                        $("#modal-delete").html(data)
+                        $("#_delete-modal-page").modal()
+                    })
+                })
+            })
+        })
+    </script>
+}

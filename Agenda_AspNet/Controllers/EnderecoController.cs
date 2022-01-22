@@ -47,7 +47,7 @@ namespace Agenda_AspNet.Controllers
         public IActionResult Create()
         {
             ViewBag.contato_id = new SelectList(_context.Contatos, "id", "nomecompleto");
-            return View();
+            return PartialView("_Create");
         }
 
         // POST: Endereco/Create
@@ -61,10 +61,8 @@ namespace Agenda_AspNet.Controllers
             {
                 _context.Add(endereco);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
             }
-            ViewBag.nome_contato_id = new SelectList(_context.Contatos, "id", "nomecompleto", endereco.contato_id);
-            return View(endereco);
+            return RedirectToRoute(new { controller = "Contato", action = "Details", id = endereco.contato_id });
         }
 
         // GET: Endereco/Edit/5

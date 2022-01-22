@@ -1,0 +1,71 @@
+﻿@model Agenda_AspNet.Models.Endereco
+    <!-- Modal -->
+    <div class="modal fade" id="_create-modal-endereco" tabindex="-1" aria-labelledby="ModalEndereco" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <form asp-action="Create">
+                    <div class="modal-body">
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                        <div class="w-100 d-flex">
+                            <div class="form-group w-25 m-1">
+                                <label asp-for="cep" class="control-label"></label>
+                                <input asp-for="cep" class="form-control" id="cep"/>
+                                <span asp-validation-for="cep" class="text-danger"></span>
+                            </div>
+                            <div class="form-group w-50 m-1">
+                                <label asp-for="logradouro" class="control-label"></label>
+                                <input asp-for="logradouro" class="form-control" />
+                                <span asp-validation-for="logradouro" class="text-danger"></span>
+                            </div>
+                            <div class="form-group w-25 m-1">
+                                <label asp-for="numero" class="control-label"></label>
+                                <input asp-for="numero" class="form-control" />
+                                <span asp-validation-for="numero" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="w-100 d-flex">
+                            <div class="form-group w-75 m-1">
+                                <label asp-for="complemento" class="control-label"></label>
+                                <input asp-for="complemento" class="form-control" />
+                                <span asp-validation-for="complemento" class="text-danger"></span>
+                            </div>
+                            <div class="form-group w-25 m-1">
+                                <label asp-for="bairro" class="control-label"></label>
+                                <input asp-for="bairro" class="form-control" />
+                                <span asp-validation-for="bairro" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="w-100 d-flex">
+                            <div class="form-group w-25 m-1">
+                                <label asp-for="localidade" class="control-label"></label>
+                                <input asp-for="localidade" class="form-control" />
+                                <span asp-validation-for="localidade" class="text-danger"></span>
+                            </div>
+                            <div class="form-group w-25 m-1">
+                                <label asp-for="uf" class="control-label"></label>
+                                <input asp-for="uf" class="form-control" />
+                                <span asp-validation-for="uf" class="text-danger"></span>
+                            </div>
+                            <div class="form-group w-50 m-1">
+                                <label asp-for="contato_id" class="control-label"></label>
+                                <select asp-for="contato_id" class="form-control" asp-items="@ViewBag.contato_id">
+                                    <option value="" disabled selected>Selecione um contato</option>
+                                </select>
+                                <span asp-validation-for="contato_id" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <div class="form-group">
+                            <a data-dismiss="modal" class="btn btn-sm btn-secondary">Voltar para Contato</a> |
+                            <input type="submit" value="Salvar" id="salvar_endereco" class="btn btn-sm btn-outline-success" />
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    @section Scripts {
+        @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    }
