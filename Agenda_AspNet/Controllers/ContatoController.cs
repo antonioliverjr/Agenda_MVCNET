@@ -34,6 +34,22 @@ namespace Agenda_AspNet.Controllers
             return View(await _context.Contatos.ToListAsync());
         }
 
+        // GET: Contato/Search/String
+        public async Task<IActionResult> Search(string? termo)
+        {
+            if (termo == null)
+            {
+                return RedirectToAction(nameof(Index));
+            }
+
+            var contatos = await _context.Contatos
+                .Where(c => c.nome.Contains(termo) || c.sobrenome.Contains(termo) || c.telefone.Contains(termo))
+                .ToListAsync();
+
+            ViewBag.termo = termo;
+            return PartialView("Index", contatos);
+        }
+
         // GET: Contato/Details/5
         public async Task<IActionResult> Details(int? id)
         {
