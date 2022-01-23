@@ -280,4 +280,7 @@ obj/
 /node_modules
 /wwwroot/node_modules
 
+# Static Files
+/wwwroot/media
+
 # End of https://www.toptal.com/developers/gitignore/api/aspnetcore,dotnetcore

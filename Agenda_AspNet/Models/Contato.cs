@@ -32,6 +32,7 @@ namespace Agenda_AspNet.Models
         [ForeignKey("categoria_id")]
         [Display(Name = "Categoria")]
         public Categoria categoria { get; set; }
+        [Display(Name = "Foto Perfil")]
         public string foto { get; set; }
         [Display(Name = "Status")]
         public bool ativo { get; set; } = true;

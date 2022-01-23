@@ -13,7 +13,7 @@
     <div class="row">
         <div class="col-sm-8 text-center">
             <div class="card bg-info text-dark col-sm-8">
-                <img class="card-img" src="@Html.DisplayFor(model => model.foto)" />
+                <img class="card-img w-auto h-auto p-5 mt-1" src="@Url.Content(Model.foto)"/>
                 <div class="card-body">
                     <h5 class="card-title">@Html.DisplayFor(model => model.nome)</h5>
                     <h6 class="mb-4">@Html.DisplayFor(model => model.sobrenome)</h6>
@@ -33,14 +33,18 @@
             {
                 @foreach (var item in Model.enderecos)
                 {
-                    <div class="card bg-info text-white">
+                    <div class="card bg-warning text-white">
                         <div class="card-title"></div>
                         <div class="card-body">
                             <h6>@Html.DisplayNameFor(modelItem => item.id): @Html.DisplayFor(modelItem => item.id) - @Html.DisplayNameFor(modelItem => item.cep): @Html.DisplayFor(modelItem => item.cep)</h6>
                             <p>End: @Html.DisplayFor(modelItem => item.logradouro), @Html.DisplayFor(modelItem => item.numero)</p>
                             <p>@Html.DisplayFor(modelItem => item.complemento)</p>
                         </div>
-                        <div class="card-footer">@Html.DisplayFor(modelItem => item.bairro) - @Html.DisplayFor(modelItem => item.localidade)/@Html.DisplayFor(modelItem => item.uf)</div>
+                        <div class="card-footer">                            
+                            <spam class="mr-2">@Html.DisplayFor(modelItem => item.bairro) - @Html.DisplayFor(modelItem => item.localidade)/@Html.DisplayFor(modelItem => item.uf)</spam>
+                            <a href="#" data-id="@item.id" class="btn btn-sm btn-info j_endereco_edit" title="Editar Cadastro">Edit</a> |
+                            <a href="#" data-id="@item.id" class="btn btn-sm btn-danger j_endereco_delete" title="Deletar Cadastro">Del</a>
+                        </div>
                     </div>
                 }
             }
@@ -51,50 +55,126 @@
     <a asp-action="Edit" asp-route-id="@Model.id" class="btn btn-sm btn-info" title="Editar Cadastro">Edit</a> |
     <a href="#" class="btn btn-sm btn-warning j_endereco_create" data-id="@Model.id" title="Novo Endereço">Cadastrar Endereço</a> |
     <a asp-action="Index" class="btn btn-sm btn-secondary">Voltar para Lista</a>
-
 </div>
 
-<div id="modal_endereco_new"></div>
+<div id="modal_endereco"></div>
+<div id="modal-delete"></div>
 
 @section Scripts { 
     <script>
         $(function () {
+            function validarForm() {
+                var numero = $("#numero")
+                var cep = $("#cep")
+
+                if (numero.val() != "" && cep.val() != "") {
+                    numero.removeClass("is-invalid")
+                    cep.removeClass("is-invalid")
+                    return true
+                } else if (cep.val() != "" && numero.val() == "") {
+                    cep.removeClass("is-invalid")
+                    numero.addClass("is-invalid")
+                    return false
+                } else if (cep.val() == "" && numero.val() != "") {
+                    cep.addClass("is-invalid")
+                    numero.removeClass("is-invalid")
+                    return false
+                } else {
+                    cep.addClass("is-invalid")
+                    numero.addClass("is-invalid")
+                    return false
+                }
+            }
+
+            function liberarBotao() {
+                var botao = $("#salvar_endereco")
+
+                if (validarForm()) {
+                    botao.prop("disabled", false)
+                } else {
+                    botao.prop("disabled", true)
+                }
+            }
 
             function modal() {
-                var botao = $("#salvar_endereco")
-                botao.prop("disabled", true)
-                $("#cep").inputmask('99999-999')
+                liberarBotao()
+                $("#numero").on("change", function () {
+                    liberarBotao()
+                })
+
                 $("#cep").on("change", function () {
                     var cep = $(this).val()
-                    if (cep.length == 8) {
-                        $(this).removeClass("is-invalid")
-
-                        // Implementar viacep
-
-                        botao.prop("disabled", false)
+                    if (cep.length === 8) {
+                        validarForm()
+                        var url = "https://viacep.com.br/ws/" + cep + "/json/";
+                        $.getJSON(url, function (response) {
+                            if (!response.erro) {
+                                $("#logradouro").val(response.logradouro).prop("readonly", true);
+                                $("#bairro").val(response.bairro).prop("readonly", true);
+                                $("#localidade").val(response.localidade).prop("readonly", true);
+                                $("#uf").val(response.uf).prop("readonly", true);
+                                liberarBotao()
+                            }
+                        })
                     }
                     else {
-                        $(this).addClass("is-invalid")
-                        botao.prop("disabled", true)
+                        validarForm()
+                        liberarBotao()
                     }
+                })
+            }
+
+            function ajaxModal(id, tipo) {
+                let url = ""
+                if(tipo == "Create"){
+                    url = '@Url.Action("Create", "Endereco")'
+                }
+                else if (tipo = "Edit"){
+                    url = '@Url.Action("Edit", "Endereco")' + "/" + id
+                    id = '@Model.id'
+                }
+                $.ajax({
+                    type: "GET",
+                    url: url,
+                    success: (function (data) {
+                        $("#modal_endereco").html(data)
+                        $("#contato_id").val(id).change()
+                        modal()
+                        if (tipo == "Edit") {
+                            $("#logradouro").prop("readonly", true);
+                            $("#bairro").prop("readonly", true);
+                            $("#localidade").prop("readonly", true);
+                            $("#uf").prop("readonly", true);
+                        }
+                        $("#_modal-endereco").modal()
+                    })
                 })
             }
 
             $(".j_endereco_create").on("click", function (e) {
                 e.preventDefault()
                 var id = $(this).data("id")
+                ajaxModal(id, "Create")
+            })
+
+            $(".j_endereco_edit").on("click", function (e) {
+                e.preventDefault()
+                var id_end = $(this).data("id")
+                ajaxModal(id_end, "Edit")
+            })
+
+            $(".j_endereco_delete").on("click", function (e) {
+                e.preventDefault()
+                var id = $(this).data("id")
                 $.ajax({
                     type: "GET",
-                    url: '@Url.Action("Create", "Endereco")',
+                    url: '@Url.Action("Delete", "Endereco")' + "/" + id,
                     success: (function (data) {
-                        $("#modal_endereco_new").html(data)
-                        $("#contato_id").val(id).change()
-                        modal()
-                        $("#_create-modal-endereco").modal()
+                        $("#modal-delete").html(data)
+                        $("#_delete-modal-page").modal()
                     })
                 })
             })
-
         })
     </script>
 }

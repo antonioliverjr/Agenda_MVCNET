@@ -13,7 +13,6 @@ namespace Agenda_AspNet.Models
         public int id { get; set; }
         [Required]
         [Display(Name = "Cep")]
-        [MaxLength(8)]
         public int cep { get; set; }
         [Required]
         [Display(Name = "Endereço")]

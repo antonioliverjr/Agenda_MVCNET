@@ -25,28 +25,10 @@ namespace Agenda_AspNet.Controllers
             return View(await _context.Categorias.ToListAsync());
         }
 
-        // GET: Categoria/Details/5
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var categoria = await _context.Categorias
-                .FirstOrDefaultAsync(m => m.id == id);
-            if (categoria == null)
-            {
-                return NotFound();
-            }
-
-            return View(categoria);
-        }
-
         // GET: Categoria/Create
         public IActionResult Create()
         {
-            return View();
+            return PartialView("_Create");
         }
 
         // POST: Categoria/Create
@@ -54,9 +36,9 @@ namespace Agenda_AspNet.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("id,descricao")] Categoria categoria)
+        public async Task<IActionResult> Create([Bind("descricao")] Categoria categoria)
         {
-            if (ModelState.IsValid)
+            if (ModelState.IsValid && !CategoriaExists(categoria.descricao))
             {
                 _context.Add(categoria);
                 await _context.SaveChangesAsync();
@@ -78,7 +60,7 @@ namespace Agenda_AspNet.Controllers
             {
                 return NotFound();
             }
-            return View(categoria);
+            return PartialView("_Edit", categoria);
         }
 
         // POST: Categoria/Edit/5
@@ -93,7 +75,7 @@ namespace Agenda_AspNet.Controllers
                 return NotFound();
             }
 
-            if (ModelState.IsValid)
+            if (ModelState.IsValid && !CategoriaExists(categoria.descricao))
             {
                 try
                 {
@@ -102,7 +84,7 @@ namespace Agenda_AspNet.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!CategoriaExists(categoria.id))
+                    if (!CategoriaExists(categoria.descricao))
                     {
                         return NotFound();
                     }
@@ -131,7 +113,7 @@ namespace Agenda_AspNet.Controllers
                 return NotFound();
             }
 
-            return View(categoria);
+            return PartialView("_Delete", categoria);
         }
 
         // POST: Categoria/Delete/5
@@ -145,9 +127,9 @@ namespace Agenda_AspNet.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        private bool CategoriaExists(int id)
+        private bool CategoriaExists(string descricao)
         {
-            return _context.Categorias.Any(e => e.id == id);
+            return _context.Categorias.Any(e => e.descricao == descricao);
         }
     }
 }

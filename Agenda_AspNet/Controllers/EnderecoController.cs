@@ -19,30 +19,6 @@ namespace Agenda_AspNet.Controllers
             _context = context;
         }
 
-        // GET: Endereco
-        public async Task<IActionResult> Index()
-        {
-            return View(await _context.Enderecos.ToListAsync());
-        }
-
-        // GET: Endereco/Details/5
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var endereco = await _context.Enderecos
-                .FirstOrDefaultAsync(m => m.id == id);
-            if (endereco == null)
-            {
-                return NotFound();
-            }
-
-            return View(endereco);
-        }
-
         // GET: Endereco/Create
         public IActionResult Create()
         {
@@ -59,8 +35,11 @@ namespace Agenda_AspNet.Controllers
         {
             if (ModelState.IsValid)
             {
-                _context.Add(endereco);
-                await _context.SaveChangesAsync();
+                if(!EnderecoExists(endereco.cep, endereco.contato_id))
+                {
+                    _context.Add(endereco);
+                    await _context.SaveChangesAsync();
+                }
             }
             return RedirectToRoute(new { controller = "Contato", action = "Details", id = endereco.contato_id });
         }
@@ -78,7 +57,8 @@ namespace Agenda_AspNet.Controllers
             {
                 return NotFound();
             }
-            return View(endereco);
+            ViewBag.contato_id = new SelectList(_context.Contatos, "id", "nomecompleto", endereco.contato_id);
+            return PartialView("_Edit", endereco);
         }
 
         // POST: Endereco/Edit/5
@@ -86,7 +66,7 @@ namespace Agenda_AspNet.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("id,cep,logradouro,numero,complemento,bairro,localidade,uf")] Endereco endereco)
+        public async Task<IActionResult> Edit(int id, [Bind("id,cep,logradouro,numero,complemento,bairro,localidade,uf,contato_id")] Endereco endereco)
         {
             if (id != endereco.id)
             {
@@ -102,7 +82,7 @@ namespace Agenda_AspNet.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!EnderecoExists(endereco.id))
+                    if (!EnderecoExists(endereco.cep, endereco.contato_id))
                     {
                         return NotFound();
                     }
@@ -111,9 +91,8 @@ namespace Agenda_AspNet.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
             }
-            return View(endereco);
+            return RedirectToRoute(new { controller = "Contato", action = "Details", id = endereco.contato_id });
         }
 
         // GET: Endereco/Delete/5
@@ -130,8 +109,8 @@ namespace Agenda_AspNet.Controllers
             {
                 return NotFound();
             }
-
-            return View(endereco);
+            endereco.contato = await _context.Contatos.FindAsync(endereco.contato_id);
+            return PartialView("_Delete", endereco);
         }
 
         // POST: Endereco/Delete/5
@@ -140,14 +119,15 @@ namespace Agenda_AspNet.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var endereco = await _context.Enderecos.FindAsync(id);
+            int contato_id = endereco.contato_id;
             _context.Enderecos.Remove(endereco);
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            return RedirectToRoute(new { controller = "Contato", action = "Details", id = contato_id });
         }
 
-        private bool EnderecoExists(int id)
+        private bool EnderecoExists(int cep, int contato)
         {
-            return _context.Enderecos.Any(e => e.id == id);
+            return _context.Enderecos.Any(e => e.cep == cep && e.contato_id == contato);
         }
     }
 }

@@ -9,6 +9,9 @@ using Agenda_AspNet.Data;
 using Agenda_AspNet.Models;
 using Microsoft.Extensions.Logging;
 using System.Diagnostics;
+using Microsoft.AspNetCore.Http;
+using System.IO;
+using Microsoft.AspNetCore.Hosting;
 
 namespace Agenda_AspNet.Controllers
 {
@@ -16,11 +19,13 @@ namespace Agenda_AspNet.Controllers
     {
         private readonly Context _context;
         private readonly ILogger<ContatoController> _logger;
+        private readonly IWebHostEnvironment _env;
 
-        public ContatoController(Context context, ILogger<ContatoController> logger)
+        public ContatoController(Context context, ILogger<ContatoController> logger, IWebHostEnvironment env)
         {
             _context = context;
             _logger = logger;
+            _env = env;
         }
 
         // GET: Contato
@@ -55,6 +60,45 @@ namespace Agenda_AspNet.Controllers
             return View(contato);
         }
 
+
+        public string AddFileUpload(IFormFile foto, int id_contato)
+        {
+            var dir = _env.WebRootPath + "\\media\\foto\\";
+            if (!Directory.Exists(dir))
+            {
+                Directory.CreateDirectory(dir);
+            }
+
+            if (foto != null)
+            {
+                var extensao = Path.GetExtension(foto.FileName);
+                if (extensao.Contains(".jpg") || extensao.Contains(".png") || extensao.Contains(".jpeg"))
+                {
+                    var arquivo_antigo = Directory.GetFiles(dir, id_contato + ".*");
+                    if (arquivo_antigo != null)
+                    {
+                        foreach(string file in arquivo_antigo)
+                        {
+                            if (Path.GetExtension(file) != extensao)
+                            {
+                                FileInfo arq = new FileInfo(Path.Combine(dir, file));
+                                arq.Delete();
+                            }
+                        }
+                    }
+                    var nome_arquivo = Path.Combine(dir, id_contato + extensao);
+                    var nome_banco = "~/media/foto/" + id_contato + extensao;
+                    using (var fileStream = new FileStream(nome_arquivo, FileMode.Create, FileAccess.Write))
+                    {
+                        foto.CopyTo(fileStream);
+                        return nome_banco;
+                    }
+                }                
+            }
+
+            return null;
+        }
+
         // GET: Contato/Create
         public IActionResult Create()
         {
@@ -67,7 +111,7 @@ namespace Agenda_AspNet.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("nome,sobrenome,telefone,email,descricao,categoria_id,foto")] Contato contato)
+        public async Task<IActionResult> Create([Bind("nome,sobrenome,telefone,email,descricao,categoria_id,foto")] Contato contato, IFormFile foto_input)
         {
             if (ModelState.IsValid)
             {
@@ -75,6 +119,13 @@ namespace Agenda_AspNet.Controllers
                 {
                     _context.Add(contato);
                     await _context.SaveChangesAsync();
+                    var file = AddFileUpload(foto_input, contato.id);
+                    if (file != null)
+                    {
+                        contato.foto = file.ToString();
+                        _context.Update(contato);
+                        await _context.SaveChangesAsync();
+                    }
                     return RedirectToAction(nameof(Index));
                 }
                 catch
@@ -109,7 +160,7 @@ namespace Agenda_AspNet.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("id,nome,sobrenome,telefone,email,data_criacao,descricao,categoria_id,foto,ativo")] Contato contato)
+        public async Task<IActionResult> Edit(int id, [Bind("id,nome,sobrenome,telefone,email,data_criacao,descricao,categoria_id,foto,ativo")] Contato contato, IFormFile foto_input)
         {
             if (id != contato.id)
             {
@@ -120,6 +171,12 @@ namespace Agenda_AspNet.Controllers
             {
                 try
                 {
+                    if (foto_input != null)
+                    {
+                        var file = AddFileUpload(foto_input, contato.id);
+                        contato.foto = file.ToString();
+                    }
+
                     _context.Update(contato);
                     await _context.SaveChangesAsync();
                 }

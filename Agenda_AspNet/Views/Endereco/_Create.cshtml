@@ -1,6 +1,6 @@
 ﻿@model Agenda_AspNet.Models.Endereco
     <!-- Modal -->
-    <div class="modal fade" id="_create-modal-endereco" tabindex="-1" aria-labelledby="ModalEndereco" aria-hidden="true">
+    <div class="modal fade" id="_modal-endereco" tabindex="-1" aria-labelledby="ModalEndereco" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <form asp-action="Create">
@@ -57,6 +57,7 @@
                     </div>
                     <div class="modal-footer">
                         <div class="form-group">
+                            <input type="hidden" asp-for="id" />
                             <a data-dismiss="modal" class="btn btn-sm btn-secondary">Voltar para Contato</a> |
                             <input type="submit" value="Salvar" id="salvar_endereco" class="btn btn-sm btn-outline-success" />
                         </div>

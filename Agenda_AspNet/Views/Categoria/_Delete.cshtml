@@ -1,0 +1,22 @@
+﻿@model Agenda_AspNet.Models.Categoria
+<!-- Modal Delete Categoria -->
+<div class="modal fade" id="_categoria_modal" tabindex="-1" aria-labelledby="ModalDelete" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Tem certeza que deseja Excluir?</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>A Categoria <strong>@Html.DisplayFor(model => model.descricao)</strong></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-sm btn-primary" data-dismiss="modal">Cancelar</button> |
+                <form asp-action="Delete">
+                    <input type="hidden" asp-for="id" />
+                    <input type="submit" value="Delete" class="btn btn-sm btn-danger" />
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

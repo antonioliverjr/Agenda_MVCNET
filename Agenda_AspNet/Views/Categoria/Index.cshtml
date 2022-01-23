@@ -8,7 +8,7 @@
 <h1>Lista de Categorias</h1>
 
 <p>
-    <a asp-action="Create" class="btn btn-outline-info">Nova Categoria</a>
+    <a href="#" id="criar_categoria" class="btn btn-outline-info">Nova Categoria</a>
 </p>
 <table class="table table-striped table-dark col-6">
     <thead>
@@ -25,12 +25,68 @@
             <td>
                 @Html.DisplayFor(modelItem => item.descricao)
             </td>
-            <td>
-                <a asp-action="Details" asp-route-id="@item.id" class="btn btn-sm btn-success" title="Detalhes do Cadastro">Ver</a> |
-                <a asp-action="Edit" asp-route-id="@item.id" class="btn btn-sm btn-info" title="Editar Cadastro">Edit</a> |
-                <a asp-action="Delete" asp-route-id="@item.id" class="btn btn-sm btn-danger" title="Deletar Cadastro">Del</a>
+            <td>                
+                <a data-id="@item.id" class="btn btn-sm btn-info j_editar_categoria" title="Editar Cadastro">Edit</a> |
+                <a data-id="@item.id" class="btn btn-sm btn-danger j_delete_categoria" title="Deletar Cadastro">Del</a>
             </td>
         </tr>
 }
     </tbody>
 </table>
+
+<div id="modal_categoria"></div>
+
+@section Scripts {
+    <script>
+        $(function () {
+            function btnSalvar() {
+                var desc_cat = $("#descricao")
+                var btn = $("#salvar_categoria")
+
+                if (desc_cat.val() == "") {
+                    btn.prop("disabled", true)
+                } else {
+                    btn.prop("disabled", false)
+                }
+
+                desc_cat.on("change", function () {
+                    if ($(this).val() != "") {
+                        btn.prop("disabled", false)
+                    }
+                })
+            }
+
+            function ajaxCategoria(url) {
+                $.ajax({
+                    type: "GET",
+                    url: url,
+                    success: (function (data) {
+                        $("#modal_categoria").html(data)
+                        btnSalvar()
+                        $("#_categoria_modal").modal()
+                    })
+                })
+            }
+
+            $("#criar_categoria").on("click", function (e) {
+                e.preventDefault()
+                var url = '@Url.Action("Create", "Categoria")'
+                ajaxCategoria(url)
+            })
+
+            $(".j_editar_categoria").on("click", function (e) {
+                e.preventDefault()
+                var id = $(this).data("id")
+                var url = '@Url.Action("Edit", "Categoria")' + "/" + id
+                ajaxCategoria(url)
+            })
+
+            $(".j_delete_categoria").on("click", function (e) {
+                e.preventDefault()
+                var id = $(this).data("id")
+                var url = '@Url.Action("Delete", "Categoria")' + "/" + id
+                ajaxCategoria(url)
+            })
+        })
+    </script>    
+}
