@@ -12,6 +12,8 @@ using System.Diagnostics;
 using Microsoft.AspNetCore.Http;
 using System.IO;
 using Microsoft.AspNetCore.Hosting;
+using ReflectionIT.Mvc.Paging;
+using Microsoft.AspNetCore.Routing;
 
 namespace Agenda_AspNet.Controllers
 {
@@ -29,25 +31,23 @@ namespace Agenda_AspNet.Controllers
         }
 
         // GET: Contato
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string? filter, int? page)
         {
-            return View(await _context.Contatos.ToListAsync());
-        }
-
-        // GET: Contato/Search/String
-        public async Task<IActionResult> Search(string? termo)
-        {
-            if (termo == null)
+            int pageSize = 15;
+            var contatos = _context.Contatos.AsNoTracking().AsQueryable().OrderBy(c => c.nome);
+            
+            if (filter != null)
             {
-                return RedirectToAction(nameof(Index));
+                contatos = contatos.Where(c => c.nome.Contains(filter) || c.sobrenome.Contains(filter) || c.telefone.Contains(filter))
+                    .OrderBy(c => c.nome);
             }
 
-            var contatos = await _context.Contatos
-                .Where(c => c.nome.Contains(termo) || c.sobrenome.Contains(termo) || c.telefone.Contains(termo))
-                .ToListAsync();
+            var resultado = await PagingList.CreateAsync(contatos, pageSize, page ?? 1);
 
-            ViewBag.termo = termo;
-            return PartialView("Index", contatos);
+            ViewBag.filter = filter;
+            resultado.RouteValue = new RouteValueDictionary();
+            resultado.RouteValue.Add("filter", filter);
+            return View(resultado);
         }
 
         // GET: Contato/Details/5

@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using ReflectionIT.Mvc.Paging;
 
 namespace Agenda_AspNet
 {
@@ -31,6 +32,11 @@ namespace Agenda_AspNet
             services.AddDbContext<Context>(options =>
                 options.UseMySQL(Configuration.GetConnectionString("MySql"))
             );
+
+           services.AddPaging(options => {
+               options.ViewName = "Bootstrap4";
+               options.PageParameterName = "page";
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

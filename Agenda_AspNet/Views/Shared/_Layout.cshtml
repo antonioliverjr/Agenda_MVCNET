@@ -26,9 +26,9 @@
                             <a class="nav-link text-dark" asp-area="" asp-controller="Categoria" asp-action="Index">Categorias</a>
                         </li>
                     </ul>
-                    <form asp-controller="Contato" asp-action="Search">
+                    <form asp-controller="Contato" asp-action="Index">
                         <div class="form-outline d-flex">
-                            <input id="search" type="search" class="form-control mr-2" placeholder="Pesquisar" name="termo" value="@ViewBag.termo">
+                            <input id="search" type="search" class="form-control mr-2" placeholder="Pesquisar" name="filter" value="@ViewBag.filter">
                             <button class="btn btn-sm btn-outline-dark" type="submit">Ir</button>
                         </div>
                     </form>
