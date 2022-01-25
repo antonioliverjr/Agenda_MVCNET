@@ -42,9 +42,11 @@ namespace Agenda_AspNet.Controllers
             {
                 _context.Add(categoria);
                 await _context.SaveChangesAsync();
+                TempData["success"] = "Cadastro realizado!";
                 return RedirectToAction(nameof(Index));
             }
-            return View(categoria);
+            TempData["error"] = "Erro! Descrição inválida ou já utilizada!";
+            return RedirectToAction(nameof(Index));
         }
 
         // GET: Categoria/Edit/5
@@ -52,13 +54,15 @@ namespace Agenda_AspNet.Controllers
         {
             if (id == null)
             {
-                return NotFound();
+                TempData["error"] = "Categoria inexistente!";
+                return RedirectToAction(nameof(Index));
             }
 
             var categoria = await _context.Categorias.FindAsync(id);
             if (categoria == null)
             {
-                return NotFound();
+                TempData["error"] = "Categoria inexistente!";
+                return RedirectToAction(nameof(Index));
             }
             return PartialView("_Edit", categoria);
         }
@@ -72,7 +76,8 @@ namespace Agenda_AspNet.Controllers
         {
             if (id != categoria.id)
             {
-                return NotFound();
+                TempData["error"] = "Categoria inexistente!";
+                return RedirectToAction(nameof(Index));
             }
 
             if (ModelState.IsValid && !CategoriaExists(categoria.descricao))
@@ -81,12 +86,14 @@ namespace Agenda_AspNet.Controllers
                 {
                     _context.Update(categoria);
                     await _context.SaveChangesAsync();
+                    TempData["success"] = "Categoria Atualizada!";
                 }
                 catch (DbUpdateConcurrencyException)
                 {
                     if (!CategoriaExists(categoria.descricao))
                     {
-                        return NotFound();
+                        TempData["error"] = "Categoria inexistente!";
+                        return RedirectToAction(nameof(Index));
                     }
                     else
                     {
@@ -95,7 +102,8 @@ namespace Agenda_AspNet.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(categoria);
+            TempData["warning"] = "Categoria Existente ou Descrição invalida!";
+            return RedirectToAction(nameof(Index));
         }
 
         // GET: Categoria/Delete/5
@@ -103,16 +111,18 @@ namespace Agenda_AspNet.Controllers
         {
             if (id == null)
             {
-                return NotFound();
+                TempData["error"] = "Categoria inexistente!";
+                return RedirectToAction(nameof(Index));
             }
 
             var categoria = await _context.Categorias
                 .FirstOrDefaultAsync(m => m.id == id);
             if (categoria == null)
             {
-                return NotFound();
+                TempData["error"] = "Categoria inexistente!";
+                return RedirectToAction(nameof(Index));
             }
-
+            
             return PartialView("_Delete", categoria);
         }
 
@@ -124,6 +134,7 @@ namespace Agenda_AspNet.Controllers
             var categoria = await _context.Categorias.FindAsync(id);
             _context.Categorias.Remove(categoria);
             await _context.SaveChangesAsync();
+            TempData["success"] = "Categoria Excluida!";
             return RedirectToAction(nameof(Index));
         }
 

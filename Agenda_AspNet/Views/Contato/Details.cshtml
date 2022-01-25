@@ -1,7 +1,9 @@
 ﻿@model Agenda_AspNet.Models.Contato
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Detalhes";
+    ViewData["Message"] = ViewBag.ErrorMessage ?? ViewBag.SuccessMessage;
+    ViewData["AlertBgColor"] = ViewBag.ErrorMessage == null ? "bg-success" : "bg-alert";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 

@@ -1,9 +1,11 @@
 ﻿@model IEnumerable<Agenda_AspNet.Models.Categoria>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Categoria";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
+
+
 
 <h1>Lista de Categorias</h1>
 
@@ -20,23 +22,25 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.descricao)
-            </td>
-            <td>                
-                <a data-id="@item.id" class="btn btn-sm btn-info j_editar_categoria" title="Editar Cadastro">Edit</a> |
-                <a data-id="@item.id" class="btn btn-sm btn-danger j_delete_categoria" title="Deletar Cadastro">Del</a>
-            </td>
-        </tr>
-}
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.descricao)
+                </td>
+                <td>
+                    <a data-id="@item.id" class="btn btn-sm btn-info j_editar_categoria" title="Editar Cadastro">Edit</a> |
+                    <a data-id="@item.id" class="btn btn-sm btn-danger j_delete_categoria" title="Deletar Cadastro">Del</a>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
 
 <div id="modal_categoria"></div>
 
 @section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
     <script>
         $(function () {
             function btnSalvar() {
@@ -49,8 +53,22 @@
                     btn.prop("disabled", false)
                 }
 
+                /*desc_cat.validate({
+                    rules {
+                        required: true,
+                        minlenght: 5,
+                        maxlenght: 50,
+                        messages: {
+                            required: "Preencha uma descrição",
+                            minleght: "A descrição deve ter no mínimo 5 caracteres",
+                            maxleght: "A descrição deve ter no máximo 50 caracteres"
+                        }
+                    }
+                })*/
+
                 desc_cat.on("change", function () {
                     if ($(this).val() != "") {
+                    //if ($(this).valid()) {
                         btn.prop("disabled", false)
                     }
                 })
@@ -88,5 +106,5 @@
                 ajaxCategoria(url)
             })
         })
-    </script>    
+</script>
 }

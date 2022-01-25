@@ -27,7 +27,7 @@ bld/
 [Ll]og/
 
 # Visual Studio 2015 cache/options directory
-.vs/
+.vs/*
 # Uncomment if you have tasks that create the project's static files in wwwroot
 #wwwroot/
 
@@ -281,6 +281,6 @@ obj/
 /wwwroot/node_modules
 
 # Static Files
-/wwwroot/media
+*/wwwroot/media
 
 # End of https://www.toptal.com/developers/gitignore/api/aspnetcore,dotnetcore

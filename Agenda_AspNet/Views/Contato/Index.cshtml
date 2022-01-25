@@ -4,7 +4,7 @@
 
 
 @{
-    ViewData["Title"] = "Home";
+    ViewData["Title"] = "Inicial";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
@@ -64,9 +64,8 @@
 </table>
 <br />
 <div class="d-flex justify-content-between">
-    @*  *@
-<vc:pager paging-list="@Model"></vc:pager>
-<span>Total de Registros: @Model.TotalRecordCount</span>
+    <vc:pager paging-list="@Model"></vc:pager>
+    <span>Total de Registros: @Model.TotalRecordCount</span>
 </div>
 
 <div id="modal-delete"></div>

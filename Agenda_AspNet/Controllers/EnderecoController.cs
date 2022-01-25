@@ -39,8 +39,12 @@ namespace Agenda_AspNet.Controllers
                 {
                     _context.Add(endereco);
                     await _context.SaveChangesAsync();
+                    TempData["success"] = "Endereço cadastrado!";
                 }
+                TempData["error"] = "Este endereço já encontrasse cadastrado!";
+                return RedirectToRoute(new { controller = "Contato", action = "Details", id = endereco.contato_id });
             }
+            TempData["warning"] = "Endereço Invalido!";
             return RedirectToRoute(new { controller = "Contato", action = "Details", id = endereco.contato_id });
         }
 
@@ -49,13 +53,15 @@ namespace Agenda_AspNet.Controllers
         {
             if (id == null)
             {
-                return NotFound();
+                TempData["error"] = "Endereço não localizado!";
+                return RedirectToRoute(new { controller = "Contato", action = "Index" });
             }
 
             var endereco = await _context.Enderecos.FindAsync(id);
             if (endereco == null)
             {
-                return NotFound();
+                TempData["error"] = "Endereço não localizado!";
+                return RedirectToRoute(new { controller = "Contato", action = "Index" });
             }
             ViewBag.contato_id = new SelectList(_context.Contatos, "id", "nomecompleto", endereco.contato_id);
             return PartialView("_Edit", endereco);
@@ -70,7 +76,8 @@ namespace Agenda_AspNet.Controllers
         {
             if (id != endereco.id)
             {
-                return NotFound();
+                TempData["error"] = "Endereço não localizado!";
+                return RedirectToRoute(new { controller = "Contato", action = "Details", id = endereco.contato_id });
             }
 
             if (ModelState.IsValid)
@@ -79,12 +86,15 @@ namespace Agenda_AspNet.Controllers
                 {
                     _context.Update(endereco);
                     await _context.SaveChangesAsync();
+                    TempData["success"] = "Endereço Atualizado!";
+                    return RedirectToRoute(new { controller = "Contato", action = "Details", id = endereco.contato_id });
                 }
                 catch (DbUpdateConcurrencyException)
                 {
                     if (!EnderecoExists(endereco.cep, endereco.contato_id))
                     {
-                        return NotFound();
+                        TempData["error"] = "Endereço não localizado!";
+                        return RedirectToRoute(new { controller = "Contato", action = "Details", id = endereco.contato_id });
                     }
                     else
                     {
@@ -92,6 +102,7 @@ namespace Agenda_AspNet.Controllers
                     }
                 }
             }
+            TempData["warning"] = "Endereço não é valido!";
             return RedirectToRoute(new { controller = "Contato", action = "Details", id = endereco.contato_id });
         }
 
@@ -100,14 +111,16 @@ namespace Agenda_AspNet.Controllers
         {
             if (id == null)
             {
-                return NotFound();
+                TempData["error"] = "Endereço não localizado!";
+                return RedirectToRoute(new { controller = "Contato", action = "Index" });
             }
 
             var endereco = await _context.Enderecos
                 .FirstOrDefaultAsync(m => m.id == id);
             if (endereco == null)
             {
-                return NotFound();
+                TempData["error"] = "Endereço não localizado!";
+                return RedirectToRoute(new { controller = "Contato", action = "Index" });
             }
             endereco.contato = await _context.Contatos.FindAsync(endereco.contato_id);
             return PartialView("_Delete", endereco);
@@ -122,6 +135,7 @@ namespace Agenda_AspNet.Controllers
             int contato_id = endereco.contato_id;
             _context.Enderecos.Remove(endereco);
             await _context.SaveChangesAsync();
+            TempData["success"] = "Endereço excluído!";
             return RedirectToRoute(new { controller = "Contato", action = "Details", id = contato_id });
         }
 

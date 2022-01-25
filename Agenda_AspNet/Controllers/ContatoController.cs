@@ -35,18 +35,26 @@ namespace Agenda_AspNet.Controllers
         {
             int pageSize = 15;
             var contatos = _context.Contatos.AsNoTracking().AsQueryable().OrderBy(c => c.nome);
-            
-            if (filter != null)
+
+            if (filter != null && ContatoSearchExists(filter))
             {
                 contatos = contatos.Where(c => c.nome.Contains(filter) || c.sobrenome.Contains(filter) || c.telefone.Contains(filter))
                     .OrderBy(c => c.nome);
+            }    
+            
+            var resultado = await PagingList.CreateAsync(contatos, pageSize, page ?? 1);
+            
+            if (filter != null && ContatoSearchExists(filter))
+            {
+                ViewBag.filter = filter;
+                resultado.RouteValue = new RouteValueDictionary();
+                resultado.RouteValue.Add("filter", filter);
+            }
+            else if (filter != null)
+            {
+                TempData["error"] = "Nome ou Telefone pesquisado não existe!";
             }
 
-            var resultado = await PagingList.CreateAsync(contatos, pageSize, page ?? 1);
-
-            ViewBag.filter = filter;
-            resultado.RouteValue = new RouteValueDictionary();
-            resultado.RouteValue.Add("filter", filter);
             return View(resultado);
         }
 
@@ -55,14 +63,16 @@ namespace Agenda_AspNet.Controllers
         {
             if (id == null)
             {
-                return NotFound();
+                TempData["error"] = "Contato Inexistente!";
+                return RedirectToAction(nameof(Index));
             }
 
             var contato = await _context.Contatos
                 .FirstOrDefaultAsync(m => m.id == id);
             if (contato == null)
             {
-                return NotFound();
+                TempData["error"] = "Contato Inexistente";
+                return RedirectToAction(nameof(Index));
             }
 
             var categoria = await _context.Categorias.FindAsync(contato.categoria_id);
@@ -141,16 +151,20 @@ namespace Agenda_AspNet.Controllers
                         contato.foto = file.ToString();
                         _context.Update(contato);
                         await _context.SaveChangesAsync();
+                        TempData["info"] = $"Foto salva para o Contato {contato.nome}";
                     }
+                    TempData["success"] = "Contato Adicionado!";
                     return RedirectToAction(nameof(Index));
                 }
                 catch
                 {
-                    return NotFound();
+                    TempData["error"] = "Contato Inexistente";
+                    return RedirectToAction(nameof(Index));
                 }
                 
             }
             ViewBag.categoria_id = new SelectList(_context.Categorias, "id", "descricao", contato.categoria_id);
+            TempData["warning"] = "Dados do formulário incorretos!";
             return View(contato);
         }
 
@@ -159,13 +173,15 @@ namespace Agenda_AspNet.Controllers
         {
             if (id == null)
             {
-                return NotFound();
+                TempData["error"] = "Contato Inexistente";
+                return RedirectToAction(nameof(Index));
             }
 
             var contato = await _context.Contatos.FindAsync(id);
             if (contato == null)
             {
-                return NotFound();
+                TempData["error"] = "Contato Inexistente";
+                return RedirectToAction(nameof(Index));
             }
             ViewBag.categoria_id = new SelectList(_context.Categorias, "id", "descricao", contato.categoria_id);
             return View(contato);
@@ -180,7 +196,8 @@ namespace Agenda_AspNet.Controllers
         {
             if (id != contato.id)
             {
-                return NotFound();
+                TempData["error"] = "Contato Inexistente";
+                return RedirectToAction(nameof(Index));
             }
 
             if (ModelState.IsValid)
@@ -191,16 +208,18 @@ namespace Agenda_AspNet.Controllers
                     {
                         var file = AddFileUpload(foto_input, contato.id);
                         contato.foto = file.ToString();
+                        TempData["info"] = "Foto atualizada!";
                     }
 
                     _context.Update(contato);
                     await _context.SaveChangesAsync();
+                    TempData["success"] = "Contato Atualizado!";
                 }
                 catch (DbUpdateConcurrencyException)
                 {
                     if (!ContatoExists(contato.id))
                     {
-                        return NotFound();
+                        return RedirectToAction(nameof(Index));
                     }
                     else
                     {
@@ -210,6 +229,7 @@ namespace Agenda_AspNet.Controllers
                 return RedirectToAction(nameof(Index));
             }
             ViewBag.categoria_id = new SelectList(_context.Categorias, "id", "descricao", contato.categoria_id);
+            TempData["warning"] = "Dados do formulário incorretos!";
             return View(contato);
         }
 
@@ -218,14 +238,16 @@ namespace Agenda_AspNet.Controllers
         {
             if (id == null)
             {
-                return NotFound();
+                TempData["error"] = "Contato Inexistente";
+                return RedirectToAction(nameof(Index));
             }
 
             var contato = await _context.Contatos
                 .FirstOrDefaultAsync(m => m.id == id);
             if (contato == null)
             {
-                return NotFound();
+                TempData["error"] = "Contato Inexistente";
+                return RedirectToAction(nameof(Index));
             }
 
             return PartialView("_Delete", contato);
@@ -241,15 +263,21 @@ namespace Agenda_AspNet.Controllers
                 var contato = await _context.Contatos.FindAsync(id);
                 _context.Contatos.Remove(contato);
                 await _context.SaveChangesAsync();
+                TempData["success"] = "Contato Excluído!";
                 return RedirectToAction(nameof(Index));
             }
-
-            return NotFound();
+            TempData["error"] = "Contato Inexistente";
+            return RedirectToAction(nameof(Index));
         }
 
         private bool ContatoExists(int id)
         {
             return _context.Contatos.Any(e => e.id == id);
+        }
+
+        private bool ContatoSearchExists(string? filter)
+        {
+            return _context.Contatos.Any(c => c.nome.Contains(filter) || c.sobrenome.Contains(filter) || c.telefone.Contains(filter));
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
