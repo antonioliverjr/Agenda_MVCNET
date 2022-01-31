@@ -29,10 +29,13 @@
                     </ul>
                     <form asp-controller="Contato" asp-action="Index">
                         <div class="form-outline d-flex">
-                            <input id="search" type="search" class="form-control mr-2" placeholder="Pesquisar" name="filter" value="@ViewBag.filter">
+                            <input id="search" type="search" class="form-control" placeholder="Pesquisar" name="filter" value="@ViewBag.filter">
                             <button class="btn btn-sm btn-outline-dark" type="submit">Ir</button>
                         </div>
                     </form>
+                    <ul class="navbar-nav ml-3">
+                        @await Html.PartialAsync("_LoginPartial")
+                    </ul>
                 </div>
             </div>
         </nav>

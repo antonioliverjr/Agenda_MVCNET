@@ -12,6 +12,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using ReflectionIT.Mvc.Paging;
+using Microsoft.AspNetCore.Identity;
+using Agenda_AspNet.Models.Interface;
+using Agenda_AspNet.Models;
 
 namespace Agenda_AspNet
 {
@@ -28,15 +31,26 @@ namespace Agenda_AspNet
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
-            //services.AddDbContext<Context>(); MsSQL
-            services.AddDbContext<Context>(options =>
+            services.AddDbContext<Context>(); //MsSQL
+            /*services.AddDbContext<Context>(options =>
                 options.UseMySQL(Configuration.GetConnectionString("MySql"))
-            );
+            );*/
+            services.AddDefaultIdentity<IdentityUser>(options =>
+            {
+                options.SignIn.RequireConfirmedAccount = true;
+                options.Password.RequiredLength = 6;
+                options.Password.RequireNonAlphanumeric = false;
+                options.Password.RequireDigit = false;
+                options.Password.RequireLowercase = false;
+                options.Password.RequireUppercase = false;
+            }).AddEntityFrameworkStores<Context>();
 
            services.AddPaging(options => {
                options.ViewName = "Bootstrap4";
                options.PageParameterName = "page";
             });
+
+            services.AddScoped<IAccount, Account>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -57,6 +71,7 @@ namespace Agenda_AspNet
 
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
