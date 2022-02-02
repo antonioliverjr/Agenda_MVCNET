@@ -2,9 +2,6 @@
 using Agenda_AspNet.Models.ViewModel;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace Agenda_AspNet.Controllers
@@ -18,16 +15,18 @@ namespace Agenda_AspNet.Controllers
             _account = account;
         }
 
+        [HttpGet]
         [AllowAnonymous]
-        public IActionResult Login()
+        public IActionResult Login(string ReturnUrl = null)
         {
+            TempData["ReturnUrl"] = ReturnUrl;
             return View();
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         [AllowAnonymous]
-        public async Task<IActionResult> Login(LoginModelView login, string returnUrl=null)
+        public async Task<IActionResult> Login(LoginModelView login)
         {
             if (!ModelState.IsValid)
             {
@@ -36,13 +35,16 @@ namespace Agenda_AspNet.Controllers
 
             if (await _account.AuthUser(login.UserName, login.Password, login.RememberMe))
             {
+                if (!string.IsNullOrEmpty(TempData["ReturnUrl"] as string) && Url.IsLocalUrl(TempData["ReturnUrl"] as string))
+                {
+                    return Redirect(TempData["ReturnUrl"] as string);
+                }
                 return RedirectToRoute(new { controller = "Contato", action = "Index"});
             }
 
             TempData["error"] = "Usuário e Senha não conferem ou não constam cadastro!";
             return View(login);
         }
-
         [AllowAnonymous]
         public IActionResult Register()
         {
@@ -56,6 +58,12 @@ namespace Agenda_AspNet.Controllers
         {
             if (!ModelState.IsValid)
             {
+                return View(user);
+            }
+
+            if (UserExists(user.UserName))
+            {
+                ModelState.AddModelError("UserName", "Usuário já cadastrado.");
                 return View(user);
             }
 
@@ -73,10 +81,15 @@ namespace Agenda_AspNet.Controllers
         }
         [HttpGet]
         [Authorize]
-        public IActionResult Logout()
+        public async Task<IActionResult> Logout()
         {
-            _account.Logout();
+            await _account.Logout();
             return Redirect(nameof(Login));
+        }
+
+        private bool UserExists(string username)
+        {
+            return _account.VerificaUser(username);
         }
     }
 }

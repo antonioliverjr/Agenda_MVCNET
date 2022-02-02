@@ -2,21 +2,19 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Agenda_AspNet.Models
 {
     public class Contato
     {
         public int id { get; set; }
-        [Required]
+        [Required(ErrorMessage = "O Primeiro Nome é obrigatório.")]
         [Display(Name = "Primeiro Nome")]
         public string nome { get; set; }
-        [Required]
+        [Required(ErrorMessage = "O Sobrenome é obrigatório.")]
         [Display(Name = "Sobrenome")]
         public string sobrenome { get; set; }
-        [Required]
+        [Required(ErrorMessage = "O Telefone é obrigatório.")]
         [Display(Name = "Telefone")]
         public string telefone { get; set; }
         [DataType(DataType.EmailAddress)]
@@ -26,7 +24,7 @@ namespace Agenda_AspNet.Models
         public DateTime data_criacao { get; set; } = DateTime.Now;
         [Display(Name = "Descrição do Contato")]
         public string descricao { get; set; }
-        [Required]
+        [Required(ErrorMessage = "Selecione uma Categoria.")]
         [Display(Name = "Categoria")]
         public int categoria_id { get; set; }
         [ForeignKey("categoria_id")]

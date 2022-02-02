@@ -45,12 +45,18 @@ namespace Agenda_AspNet
                 options.Password.RequireUppercase = false;
             }).AddEntityFrameworkStores<Context>();
 
-           services.AddPaging(options => {
+            services.AddPaging(options => {
                options.ViewName = "Bootstrap4";
                options.PageParameterName = "page";
             });
 
             services.AddScoped<IAccount, Account>();
+
+            services.ConfigureApplicationCookie(options =>
+            {
+                options.AccessDeniedPath = "/Account/Login";
+                options.LoginPath = "/Account/Login";
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -78,7 +84,8 @@ namespace Agenda_AspNet
             {
                 endpoints.MapControllerRoute(
                     name: "default",
-                    pattern: "{controller=Contato}/{action=Index}/{id?}");
+                    pattern: "{controller=Contato}/{action=Index}/{id?}"
+                );
             });
         }
     }

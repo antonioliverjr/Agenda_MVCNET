@@ -1,8 +1,5 @@
 ﻿using Agenda_AspNet.Models.Interface;
 using Microsoft.AspNetCore.Identity;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace Agenda_AspNet.Models
@@ -43,6 +40,16 @@ namespace Agenda_AspNet.Models
         public async Task Logout()
         {
             await _signInManager.SignOutAsync();
+        }
+
+        public bool VerificaUser(string username)
+        {
+            var result = _userManager.FindByNameAsync(username);
+            if (result.Result != null)
+            {
+                return true;
+            }
+            return false;
         }
     }
 }

@@ -2,20 +2,19 @@
 @if (Context.User.Identity.IsAuthenticated)
 {
     <li class="nav-link m-auto">
-        <strong class="nav-link text-danger">Olá, @Context.User.Identity.Name!</strong>
+        <strong class="nav-link text-info">Seja bem vindo - @Context.User.Identity.Name</strong>
     </li>
-    <li class="nav-link m-0 p-0"><span>|</span></li>
     <li class="nav-link m-auto">
-        <a asp-controller="Account" asp-action="Logout" class="nav-link text-dark">Sair</a>
+        <a asp-controller="Account" asp-action="Logout" class="nav-link btn btn-sm btn-warning">Sair <i class="fas fa-sign-out-alt"></i></a>
     </li>
 }
 else
 {
     <li class="nav-item">
-        <a class="nav-link text-dark" id="register" asp-controller="Account" asp-action="Register">Registrar</a>
+        <a class="nav-link text-dark" id="register" asp-controller="Account" asp-action="Register"><i class="fas fa-id-badge"></i> Registrar</a>
     </li>
     <li class="nav-item">
-        <a class="nav-link text-dark" id="login" asp-controller="Account" asp-action="Login">Logar</a>
+        <a class="nav-link text-dark" id="login" asp-controller="Account" asp-action="Login">Logar <i class="fas fa-sign-in-alt"></i></a>
     </li>
 }
 </ul>

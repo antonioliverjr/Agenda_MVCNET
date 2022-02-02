@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
@@ -14,9 +13,11 @@ using System.IO;
 using Microsoft.AspNetCore.Hosting;
 using ReflectionIT.Mvc.Paging;
 using Microsoft.AspNetCore.Routing;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Agenda_AspNet.Controllers
 {
+    [Authorize]
     public class ContatoController : Controller
     {
         private readonly Context _context;
@@ -31,6 +32,7 @@ namespace Agenda_AspNet.Controllers
         }
 
         // GET: Contato
+        [AllowAnonymous]
         public async Task<IActionResult> Index(string? filter, int? page)
         {
             int pageSize = 15;

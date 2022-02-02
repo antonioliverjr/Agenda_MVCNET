@@ -11,7 +11,7 @@
 <h1 class="text-center">Lista de Contatos</h1>
 
 <p>
-    <a asp-action="Create" class="btn btn-outline-info">Novo Contato</a>
+    <a asp-action="Create" class="btn btn-outline-info"><i class="fas fa-user-plus"></i> Novo</a>
 </p>
 <table class="table table-striped table-dark text-center">
     <thead>
@@ -54,9 +54,9 @@
                     @Html.DisplayFor(modelItem => item.ativo)
                 </td>
                 <td>
-                    <a asp-action="Details" asp-route-id="@item.id" class="btn btn-sm btn-success" title="Detalhes do Cadastro">Ver</a> |
-                    <a asp-action="Edit" asp-route-id="@item.id" class="btn btn-sm btn-info" title="Editar Cadastro">Edit</a> |
-                    <a href="#" class="btn btn-sm btn-danger j_delete_confirm" data-id="@item.id" title="Deletar Cadastro">Del</a>
+                    <a asp-action="Details" asp-route-id="@item.id" class="btn btn-sm btn-success" title="Detalhes do Cadastro"><i class="fas fa-user-check"></i></a> |
+                    <a asp-action="Edit" asp-route-id="@item.id" class="btn btn-sm btn-info" title="Editar Cadastro"><i class="fas fa-user-edit"></i></a> |
+                    <a href="#" class="btn btn-sm btn-danger j_delete_confirm" data-id="@item.id" title="Deletar Cadastro"><i class="fas fa-user-minus"></i></a>
                 </td>
             </tr>
         }

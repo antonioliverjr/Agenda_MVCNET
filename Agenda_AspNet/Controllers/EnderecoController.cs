@@ -1,15 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Agenda_AspNet.Data;
 using Agenda_AspNet.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Agenda_AspNet.Controllers
 {
+    [Authorize]
     public class EnderecoController : Controller
     {
         private readonly Context _context;
@@ -40,6 +40,7 @@ namespace Agenda_AspNet.Controllers
                     _context.Add(endereco);
                     await _context.SaveChangesAsync();
                     TempData["success"] = "Endereço cadastrado!";
+                    return RedirectToRoute(new { controller = "Contato", action = "Details", id = endereco.contato_id });
                 }
                 TempData["error"] = "Este endereço já encontrasse cadastrado!";
                 return RedirectToRoute(new { controller = "Contato", action = "Details", id = endereco.contato_id });

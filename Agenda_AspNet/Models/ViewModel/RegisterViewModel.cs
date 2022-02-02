@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace Agenda_AspNet.Models.ViewModel
 {
@@ -10,7 +6,8 @@ namespace Agenda_AspNet.Models.ViewModel
     {
         [Display(Name = "Usuário")]
         [StringLength(256, ErrorMessage = "Usuário deve ter no mínimo 8 digitos, sem espaços e simbolos.", MinimumLength = 8)]
-        public string UserName { get; set; }
+        [Required(ErrorMessage = "Informe um nome de usuário.")]
+        public string UserName{ get; set; }
         [Display(Name = "E-mail")]
         [EmailAddress(ErrorMessage = "Informe um e-mail válido.")]
         [Required(ErrorMessage = "O campo e-mail é obrigatório.")]
