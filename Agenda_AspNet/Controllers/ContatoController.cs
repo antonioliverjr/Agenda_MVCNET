@@ -147,13 +147,17 @@ namespace Agenda_AspNet.Controllers
                 {
                     _context.Add(contato);
                     await _context.SaveChangesAsync();
-                    var file = AddFileUpload(foto_input, contato.id);
-                    if (file != null)
+                    if (foto_input != null)
                     {
-                        contato.foto = file.ToString();
-                        _context.Update(contato);
-                        await _context.SaveChangesAsync();
-                        TempData["info"] = $"Foto salva para o Contato {contato.nome}";
+                        var file = AddFileUpload(foto_input, contato.id);
+                        if (file != null)
+                        {
+                            contato.foto = file.ToString();
+                            _context.Update(contato);
+                            await _context.SaveChangesAsync();
+                            TempData["info"] = $"Foto salva para o Contato {contato.nome}";
+                        }
+                        TempData["warning"] = "Não foi possível adicionar a foto";
                     }
                     TempData["success"] = "Contato Adicionado!";
                     return RedirectToAction(nameof(Index));

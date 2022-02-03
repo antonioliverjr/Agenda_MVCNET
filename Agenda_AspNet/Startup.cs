@@ -87,6 +87,8 @@ namespace Agenda_AspNet
                     pattern: "{controller=Contato}/{action=Index}/{id?}"
                 );
             });
+
+            app.UseApplyMigration();
         }
     }
 }
