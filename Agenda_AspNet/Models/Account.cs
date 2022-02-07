@@ -26,7 +26,8 @@ namespace Agenda_AspNet.Models
             IdentityUser user = new IdentityUser()
             {
                 UserName = nome,
-                Email = email
+                Email = email,
+                EmailConfirmed = true
             };
 
             var result = await _userManager.CreateAsync(user, password);
