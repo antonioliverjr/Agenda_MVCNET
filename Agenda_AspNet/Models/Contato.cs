@@ -15,6 +15,7 @@ namespace Agenda_AspNet.Models
         [Display(Name = "Sobrenome")]
         public string sobrenome { get; set; }
         [Required(ErrorMessage = "O Telefone é obrigatório.")]
+        [StringLength(11, ErrorMessage = "Telefone deve conter apenas DDD+Numero.")]
         [Display(Name = "Telefone")]
         public string telefone { get; set; }
         [DataType(DataType.EmailAddress)]
