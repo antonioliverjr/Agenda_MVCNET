@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace Agenda_AspNet.Models
 {
-    public class Account : IAccount
+    public class Account : IAccount, IAccountRepository
     {
         private readonly UserManager<IdentityUser> _userManager;
         private readonly SignInManager<IdentityUser> _signInManager;
@@ -51,6 +51,20 @@ namespace Agenda_AspNet.Models
                 return true;
             }
             return false;
+        }
+        public async Task<IdentityUser> ObterUser(string username, string password)
+        {
+            var user = await _userManager.FindByNameAsync(username);
+            if (user.Equals(null))
+            {
+                return null;
+            }
+            var result = await _userManager.CheckPasswordAsync(user, password);
+            if (result)
+            {
+                return user;
+            }
+            return null;
         }
     }
 }

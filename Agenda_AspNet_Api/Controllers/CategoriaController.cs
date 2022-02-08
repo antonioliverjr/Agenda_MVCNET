@@ -1,6 +1,7 @@
 ﻿using Agenda_AspNet.Models;
 using Agenda_AspNet_Api.Business.Repository;
 using Agenda_AspNet_Api.Models.Categoria;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -15,6 +16,7 @@ namespace Agenda_AspNet_Api.Controllers
 {
     [Route("api/v1/[controller]")]
     [ApiController]
+    [Authorize]
     public class CategoriaController : ControllerBase
     {
         private readonly ILogger<CategoriaController> _logger;
